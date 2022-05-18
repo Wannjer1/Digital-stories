@@ -21,7 +21,7 @@ class ProdConfig(Config):
 class DevConfig(Config):
   SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:modernblog@localhost:5432/modernblog'
   DEBUG = True
-  ASSETS_DEBUG = True
+ 
   
 config_options = {
   'development': DevConfig,
