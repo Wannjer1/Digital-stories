@@ -9,13 +9,13 @@ from flask_bootstrap import Bootstrap
 
 db = SQLAlchemy()
 mail = Mail()
+photos = UploadSet('photos',IMAGES)
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 bootstrap = Bootstrap()
 
 
-photos = UploadSet('photos',IMAGES)
 
 def create_app(config_name):
   '''function to create and configure the Flask app'''
