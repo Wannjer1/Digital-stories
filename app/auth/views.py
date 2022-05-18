@@ -20,10 +20,6 @@ def register():
 
 # route to login page
 
-@auth.route('/login')
-def login():
-    return render_template('auth/login.html')
-
 # route to login forms
 @auth.route('/login',methods=['GET','POST'])
 def login():
