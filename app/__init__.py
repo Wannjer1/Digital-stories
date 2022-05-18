@@ -24,20 +24,7 @@ def create_app(config_name):
   login_manager.init_app(app)
   configure_uploads(app,photos)
   mail.init_app(app)
-  
-  assets = Environment(app)
-  assets.url = app.static_url_path
-  
-  sass = Bundle('sass/global.scss', filters='pyscss', depends='sass/**/*.scss', output='styles/global.css')
-  
-  assets.config['PYSCSS_LOAD_PATHS'] = assets.load_path
-  assets.config['PYSCSS_STATIC_URL'] = assets.url
-  assets.config['PYSCSS_STATIC_ROOT'] = assets.directory
-  assets.config['PYSCSS_ASSETS_URL'] = assets.url
-  assets.config['PYSCSS_ASSETS_ROOT'] = assets.directory
-  
-  assets.register('sass_all', sass)
-  sass.build()
+
   
   '''import and register the main blueprint'''
   from .main import main as main_blueprint
