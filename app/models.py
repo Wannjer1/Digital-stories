@@ -17,9 +17,10 @@ class User(UserMixin, db.Model):
   last_name = db.Column(db.String(255))
   username = db.Column(db.String(255), unique=True, index=True)
   email = db.Column(db.String(255), unique=True, index=True)
+  password_hash = db.Column(db.String(255))
   bio = db.Column(db.String(255))
   profile_pic_path = db.Column(db.String(255))
-  password_hash = db.Column(db.String(255))
+ 
   
   @property
   def password(self):
