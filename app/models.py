@@ -20,6 +20,7 @@ class User(UserMixin, db.Model):
   password_hash = db.Column(db.String(255))
   bio = db.Column(db.String(255))
   profile_pic_path = db.Column(db.String(255))
+  role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
  
   
   @property
@@ -40,6 +41,7 @@ class Role(db.Model):
   __tablename__ = 'roles'
   id = db.Column(db.Integer, primary_key=True)
   name= db.Column(db.String(255))
+  users = db.relationship('User',backref = 'role', lazy = "dynamic")
 
   def __repr__(self):
     return f'User {self.name}'
