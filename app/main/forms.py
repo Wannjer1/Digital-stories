@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,SubmitField,TextAreaField,ValidationError
+from wtforms import StringField,SubmitField,TextAreaField,ValidationError,RadioField
 from wtforms.validators import InputRequired,Email
 from ..models import User
 from flask_login import current_user
@@ -20,7 +20,10 @@ class UpdateProfile(FlaskForm):
             if User.query.filter_by(username = username.data).first():
                 raise ValidationError("The username has already been taken")
 
+# form to enable creation of new blog post
 class CreateBlog(FlaskForm):
     title = StringField('Title',validators=[InputRequired()])
+    author = StringField('Author',validators=[InputRequired()])
+    category = RadioField('Category', choices=[('Fashion','Fashion'),('Food','Food'),('Interior_Design','Interior_Design'),('Lifestyle','Lifestyle'),('')],validators=[InputRequired()])
     content = TextAreaField('Blog Content',validators=[InputRequired()])
     submit = SubmitField('Post')
