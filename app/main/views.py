@@ -1,8 +1,8 @@
 from flask import render_template,request,redirect,url_for,abort
 from flask_login import login_required, current_user
-from ..models import User,Blog,Role
+from ..models import Comments, User,Blog,Role
 from datetime import datetime as dt
-from .forms import UpdateProfile,CreateBlog
+from .forms import UpdateProfile,CreateBlog,CommentForm
 from .. import db,photos
 from .. email import mail_message
 from ..requests import get_quote
@@ -98,3 +98,22 @@ def new_blog():
 
     return redirect(url_for('main.index'))
   return render_template('newblog.html',form=form,user=user)
+
+  # view root to enable commenting
+@main.route('/comments/<int:blog_id>', methods=['GET','POST'])
+def blog_comments(blog_id):
+  comments = Comments.get_comments(blog_id)
+
+  blog = Blog.query.get(blog_id)
+  blog_posted_by = blog.user_id
+  user = User.query.filter_by(id=blog_posted_by).first()
+  form = CommentForm()
+
+  if form.validate_on_submit():
+    comment = form.blog_comments.data
+    new_comment = Comments(comment = comment,blog_id = blog_id,user_id = current_user.get_id())
+    new_comment.save_comment()
+
+    return redirect(url_for('main.blog_comments',blog_id=blog_id))
+
+  return render_template('comments.html',comment_form=form,comments=comments,blog = blog, user = user)
