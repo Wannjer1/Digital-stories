@@ -1,9 +1,13 @@
-
-from unicodedata import category
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin, current_user
 from datetime import datetime
 from . import db,login_manager
+
+
+class Quote():
+  def __init__(self,author,quote):
+    self.author = author
+    self.quote = quote
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -21,7 +25,7 @@ class User(UserMixin, db.Model):
   bio = db.Column(db.String(255))
   profile_pic_path = db.Column(db.String(255))
   password_hash = db.Column(db.String(255))
-  role_id = db.Column(db.Integer,db.ForeignKey('roles.id'),nullable=False)
+  role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
   blog_user = db.relationship('Blog',backref='user', lazy='dynamic')
  
   
@@ -58,11 +62,11 @@ class Blog(db.Model):
 
   id = db.Column(db.Integer, primary_key = True)
   blog_image= db.Column(db.String,nullable=False)
-  title = db.Column(db.String(255),nullable=False)
+  title = db.Column(db.String(255))
   category = db.Column(db.String(255),nullable=False)
   owner_id = db.Column(db.Integer,db.ForeignKey("users.id"),nullable=False)
   posted = db.Column(db.DateTime,default=datetime.utcnow,nullable=False)
-  content = db.Column(db.String(),nullable=False)
+  content = db.Column(db.String(), index = True)
   
 
   def save_blog(self):
@@ -77,10 +81,10 @@ class Blog(db.Model):
 #   #   blog = Blog.query.filter_by(id=id).first()
 #   #   return blog
 
-  # @classmethod
-  # def get_blog(cls, id):
-  #   blogs = Blog.query.filter_by(id=id).first()
-  #   return blogs
+  @classmethod
+  def get_blog(cls, id):
+    blogs = Blog.query.filter_by(id=id).first()
+    return blogs
 
   def __repr__(self):
     return f'Blog {self.category}'
