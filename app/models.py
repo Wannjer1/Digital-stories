@@ -21,6 +21,7 @@ class User(UserMixin, db.Model):
   profile_pic_path = db.Column(db.String(255))
   password_hash = db.Column(db.String(255))
   role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
+  blog = db.relationship('Blog',backref='user', lazy='dynamic')
  
   
   @property
@@ -49,11 +50,29 @@ class Role(db.Model):
     return f'User {self.name}'
 
   # blog class
-  class Blog(db.Model):
-    __tablename__ = 'blog'
-    id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(255),nullable=False)
-    content = db.Column(db.Text(),nullable=False)
-    posted = db.Column(db.DateTime,default=datetime.utcnow)
-   
+class Blog(db.Model):
+  __tablename__ = 'blog'
+  id = db.Column(db.Integer, primary_key = True)
+  title = db.Column(db.String(255),nullable=False)
+  content = db.Column(db.Text(),nullable=False)
+  posted = db.Column(db.DateTime,default=datetime.utcnow)
+  user_id = db.Column(db.Integer,db.ForeignKey("users.id")) 
+
+  def save(self):
+    db.session.add(self)
+    db.session.commit()
+
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def get_blog(id):
+    blog = Blog.query.filter_by(id=id).first()
+    return blog
+
+  def __repr__(self):
+    return f'Blog {self.title}'
+
+
+
     
