@@ -33,6 +33,8 @@ class User(UserMixin, db.Model):
     
   def verify_password(self, password):
     return check_password_hash(self.password_hash, password)
+
+  
   
   def __repr__(self):
       return f'User {self.username}'
@@ -45,4 +47,13 @@ class Role(db.Model):
 
   def __repr__(self):
     return f'User {self.name}'
+
+  # blog class
+  class Blog(db.Model):
+    __tablename__ = 'blog'
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(255),nullable=False)
+    content = db.Column(db.Text(),nullable=False)
+    posted = db.Column(db.DateTime,default=datetime.utcnow)
+   
     
