@@ -5,6 +5,7 @@ from datetime import datetime as dt
 from .forms import UpdateProfile,CreateBlog
 from .. import db,photos
 from .. email import mail_message
+from ..requests import get_quote
 from . import main
 from app.main import main
 import os 
@@ -15,6 +16,9 @@ import os
 @login_required
 def index():
   '''function that renders the homepage'''
+  quote = get_quote()
+
+
   title = 'One place, Many Stories'
   Fashion = Blog.query.filter_by(category='Fashion')
   Food = Blog.query.filter_by(category='Food')
@@ -25,7 +29,7 @@ def index():
 
 
  
-  return render_template('index.html', title=title,blogs=blogs,Food=Food,Interior_Design=Interior_Design,Fashion=Fashion,Lifestyle=Lifestyle)
+  return render_template('index.html', title=title,quote=quote,blogs=blogs,Food=Food,Interior_Design=Interior_Design,Fashion=Fashion,Lifestyle=Lifestyle)
 
 # view function for displaying profile page
 @main.route('/user/<uname>')
@@ -75,7 +79,7 @@ def update_pic(uname):
 
 # view root for the new blogs
 
-@main.route('/newBlog ', methods=['GET','POST'])
+@main.route('/newBlog/new', methods=['GET','POST'])
 @login_required
 def new_blog():
   form = CreateBlog()
@@ -83,11 +87,11 @@ def new_blog():
 
   if form.validate_on_submit():
     title = form.title.data
-    author = form.author.data
     category = form.category.data
     content = form.content.data
-    owner_id = current_user._get_current_object().id
-    new_blog = Blog(owner_id=current_user._get_current_object().id,title=title,category=category,content=content,author=author)
+    owner_id = current_user
+    print(current_user._get_current_object().id)
+    new_blog = Blog(owner_id=current_user._get_current_object().id,title=title,category=category,content=content)
     db.session.add(new_blog)
     db.session.commit()
 
