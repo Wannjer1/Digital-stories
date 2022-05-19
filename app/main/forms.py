@@ -27,3 +27,8 @@ class CreateBlog(FlaskForm):
     category = RadioField('Category', choices=[('Fashion','Fashion'),('Food','Food'),('Interior_Design','Interior_Design'),('Lifestyle','Lifestyle'),('')],validators=[InputRequired()])
     content = TextAreaField('Blog Content',validators=[InputRequired()])
     submit = SubmitField('Post')
+
+# form to enable comments
+class CommentForm(FlaskForm):
+    blog_comments = TextAreaField('Comment', validators=[InputRequired()])
+    submit = SubmitField('Comment')
