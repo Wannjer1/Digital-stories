@@ -1,2 +1,26 @@
 {%extends 'base.html'%} {% import 'bootstrap/wtf.html' as wtf%} {% block content
-%} {% endblock %}
+%}
+
+<!-- random quote -->
+<div class="container p-3" style="background-color: pink">
+  <div class="row">
+    <div class="col-md-8">
+      {% for quotes in quote %}
+      <p class="box pr-3 pl-3">{{quotes.quote}}<br />{{quotes.author}}</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div>
+  {% for blog in blog %}
+  <div>
+    <h3 style="color: #f85a3e">Category: {{blog.category}}</h3>
+    <hr />
+    <h4>Description: {{ blog.description }}</h4>
+    <h6>Posted by: {{current_user.username}}.</h6>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
