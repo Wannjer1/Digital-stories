@@ -67,7 +67,7 @@ class Blog(db.Model):
   owner_id = db.Column(db.Integer,db.ForeignKey("users.id"),nullable=False)
   posted = db.Column(db.DateTime,default=datetime.utcnow,nullable=False)
   content = db.Column(db.String(), index = True)
-  
+  comments = db.relationship('Comments', backref='blog', lazy = 'dynamic')
 
   def save_blog(self):
     db.session.add(self)
@@ -90,29 +90,25 @@ class Blog(db.Model):
     return f'Blog {self.category}'
 
 # comments model
-# class Comment(db.Model):
-#   __tablename__ = 'comments'
-#   id = db.Column(db.Integer,primary_key=True)
-#   comment = db.Column(db.String)
-#   posted = db.Column(db.DateTime,default=datetime.datetime.utcnow)
-#   blog_id = db.Colun(db.Integer,db.ForeignKey('blogs.id'))
-#   user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+class Comments(db.Model):
+  __tablename__ = 'comments'
+  id = db.Column(db.Integer,primary_key=True)
+  comment = db.Column(db.String (), nullable=False)
+  blog_id = db.Column(db.Integer,db.ForeignKey('blogs.id'))
+  user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
 
-#   def save(self):
-#     db.session.add(self)
-#     db.session.commit()
+  def save_comment(self):
+    db.session.add(self)
+    db.session.commit()
 
 #   def delete(self):
 #     db.session.remove(self)
 #     db.session.commit()
 
-#   def get_comment(id):
-#     comment = Comment.query.all(id=id)
-#     return comment
+  @classmethod
+  def get_comment(cls,blog_id):
+    comments = Comments.query.filter_by(blog_id=blog_id)
+    return comments
 
-#   def __repr__(self):
-#     return f'Comment {self.comment}'
-
-
-
-    
+  def __repr__(self):
+    return f'Comments {self.comment}'
