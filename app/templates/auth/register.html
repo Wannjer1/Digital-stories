@@ -2,9 +2,12 @@
 content %}
 <div class="container">
   <div class="row">
-    <div class="col-md-2"></div>
+    <h2>SIGN UP</h2>
     <div class="col-md-8">{{wtf.quick_form(registration_form)}}</div>
-    <div class="col-md-2"></div>
+    <p>
+      Already have an account?
+      <strong><a href="{{url_for('auth.login')}}">LOGIN</a></strong>
+    </p>
   </div>
 </div>
 

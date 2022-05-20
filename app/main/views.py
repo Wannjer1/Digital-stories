@@ -79,25 +79,49 @@ def update_pic(uname):
 
 # view root for the new blogs
 
-@main.route('/newBlog/new', methods=['GET','POST'])
+@main.route('/newBlog', methods=['GET','POST'])
 @login_required
 def new_blog():
-  form = CreateBlog()
-  user = current_user
+  newblog_form = CreateBlog()
+  # user = current_user
 
-  if form.validate_on_submit():
-    title = form.title.data
-    category = form.category.data
-    content = form.content.data
-    owner_id = current_user
-    print(current_user._get_current_object().id)
-    new_blog = Blog(owner_id=current_user._get_current_object().id,title=title,category=category,content=content)
+  if newblog_form.validate_on_submit():
+    title = newblog_form.title.data
+    category = newblog_form.category.data
+    content = newblog_form.content.data
+    # print(current_user._get_current_object().id)
+    new_blog = Blog(owner_id=current_user.id,title=title,category=category,content=content)
     db.session.add(new_blog)
     db.session.commit()
 
 
     return redirect(url_for('main.index'))
-  return render_template('newblog.html',form=form,user=user)
+  return render_template('newblog.html',form=newblog_form)
+
+# delete and edit blog post 
+
+# @main.route('/edit_post/<int:pitch_id>', methods=['GET','POST'])
+# @login_required
+# def update_post(pitch_id):
+#     pitch = Pitches.query.filter_by(id=pitch_id).first()
+
+#     form = UpdatePost()
+#     if form.validate_on_submit():
+#         pitch.text=form.text.data
+#         db.session.add(pitch)
+#         db.session.commit()
+#         return redirect(url_for('.home', pitch_id=pitch.id))
+#     return render_template('edit_post.html', form=form)
+
+
+# @main.route('/delete_post/<int:pitch_id>', methods=['GET','POST'])
+# @login_required
+# def delete_post(pitch_id):
+#     pitch = Pitches.query.filter_by(id=pitch_id).first()
+
+#     db.session.delete(pitch)
+#     db.session.commit()
+#     return redirect(url_for('.home', pitch_id=pitch.id))
 
   # view root to enable commenting
 @main.route('/comments/<int:blog_id>', methods=['GET','POST'])
@@ -117,3 +141,13 @@ def blog_comments(blog_id):
     return redirect(url_for('main.blog_comments',blog_id=blog_id))
 
   return render_template('comments.html',comment_form=form,comments=comments,blog = blog, user = user)
+
+
+@main.route('/delete_comment/<int:comment_id>', methods=['GET','POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comments.query.filter_by(id=comment_id).first()
+
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('.main', comment_id=comment.id))

@@ -1,5 +1,5 @@
 {% extends 'base.html'%} {% block content %}
-<div class="container d-flex flex">
+<div class="container d-inline-flex">
   <div>
     <!-- display profile photo -->
     <div>
@@ -21,35 +21,40 @@
         enctype="multipart/form-data"
       >
         <input type="file" name="photo" class="form-control" required />
-        <input type="submit" />
+        <input type="submit" class="btn btn-outline btn-primary" />
       </form>
       {% endif %}
     </div>
   </div>
+  <hr />
+  <hr />
   <div class="row">
     <!-- username display -->
     <div class="col-md-4">
-      <h3>{{user.username| capitalize}}</h3>
+      <h3>Username: {{user.username| capitalize}}</h3>
+      <hr />
 
       <!--Displaying user bio-->
       {% if user.bio %}
-      <p>{{user.bio}}</p>
+      <p>Bio: {{user.bio}}</p>
       {%else%}
-      <p>{{user.username| capitalize}} has no bio</p>
+      <p style="color: purple">{{user.username| capitalize}} has no bio</p>
+      <hr />
       {% endif %}
-    </div>
-    <!-- update_profile -->
-    <div class="col-md-4">
+
+      <!-- update_profile -->
+
       {% if user == current_user %}
-      <button
+      <a
         class="btn btn-outline btn-primary"
         href="{{url_for('main.update_profile',uname=user.username)}}"
       >
         Edit profile
-      </button>
+      </a>
       {% endif %}
     </div>
   </div>
+  <hr />
 </div>
 
 {% endblock %}
