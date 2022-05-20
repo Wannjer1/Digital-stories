@@ -1,8 +1,11 @@
+from pydoc import describe
 from flask import render_template,request,redirect,url_for,abort
 from flask_login import login_required, current_user
-from ..models import Comments, User,Blog,Role
+from sqlalchemy import desc
+from ..models import *
 from datetime import datetime as dt
-from .forms import UpdateProfile,CreateBlog,CommentForm
+from .forms import CreateBlog, UpdateBlog, UpdateProfile,CreateBlog
+
 from .. import db,photos
 from .. email import mail_message
 from ..requests import get_quote
@@ -13,23 +16,20 @@ import os
 
 
 @main.route('/', methods= ['GET','POST'])
-@login_required
+# @login_required
 def index():
   '''function that renders the homepage'''
   quote = get_quote()
 
-
+  blogs = Blog.query.all()
   title = 'One place, Many Stories'
   Fashion = Blog.query.filter_by(category='Fashion')
   Food = Blog.query.filter_by(category='Food')
   Lifestyle = Blog.query.filter_by(category='Lifestyle')
   Interior_Design = Blog.query.filter_by(category='Interior_Design')
-  blogs = Blog.query.all()
   
-
-
  
-  return render_template('index.html', title=title,quote=quote,blogs=blogs,Food=Food,Interior_Design=Interior_Design,Fashion=Fashion,Lifestyle=Lifestyle)
+  return render_template('index.html', quote=quote,blogs=blogs,Fashion=Fashion,Interior_Design=Interior_Design,Food=Food,Lifestyle=Lifestyle,title=title,)
 
 # view function for displaying profile page
 @main.route('/user/<uname>')
@@ -82,72 +82,77 @@ def update_pic(uname):
 @main.route('/newBlog', methods=['GET','POST'])
 @login_required
 def new_blog():
-  newblog_form = CreateBlog()
-  # user = current_user
+  '''Method to enable a user to create a new blog'''
+  form = CreateBlog()
 
-  if newblog_form.validate_on_submit():
-    title = newblog_form.title.data
-    category = newblog_form.category.data
-    content = newblog_form.content.data
+  if form.validate_on_submit():
+    title = form.title.data
+    category = form.category.data
+    description = form.description.data
+    owner_id = current_user
     # print(current_user._get_current_object().id)
-    new_blog = Blog(owner_id=current_user.id,title=title,category=category,content=content)
+    new_blog = Blog(owner_id=current_user._get_current_object().id,title=title,category=category,description=description)
     db.session.add(new_blog)
     db.session.commit()
 
 
     return redirect(url_for('main.index'))
-  return render_template('newblog.html',form=newblog_form)
+  return render_template('newblog.html',form=form)
+
+
 
 # delete and edit blog post 
 
-# @main.route('/edit_post/<int:pitch_id>', methods=['GET','POST'])
-# @login_required
-# def update_post(pitch_id):
-#     pitch = Pitches.query.filter_by(id=pitch_id).first()
-
-#     form = UpdatePost()
-#     if form.validate_on_submit():
-#         pitch.text=form.text.data
-#         db.session.add(pitch)
-#         db.session.commit()
-#         return redirect(url_for('.home', pitch_id=pitch.id))
-#     return render_template('edit_post.html', form=form)
-
-
-# @main.route('/delete_post/<int:pitch_id>', methods=['GET','POST'])
-# @login_required
-# def delete_post(pitch_id):
-#     pitch = Pitches.query.filter_by(id=pitch_id).first()
-
-#     db.session.delete(pitch)
-#     db.session.commit()
-#     return redirect(url_for('.home', pitch_id=pitch.id))
-
-  # view root to enable commenting
-@main.route('/comments/<int:blog_id>', methods=['GET','POST'])
-def blog_comments(blog_id):
-  comments = Comments.get_comments(blog_id)
-
-  blog = Blog.query.get(blog_id)
-  blog_posted_by = blog.user_id
-  user = User.query.filter_by(id=blog_posted_by).first()
-  form = CommentForm()
-
-  if form.validate_on_submit():
-    comment = form.blog_comments.data
-    new_comment = Comments(comment = comment,blog_id = blog_id,user_id = current_user.get_id())
-    new_comment.save_comment()
-
-    return redirect(url_for('main.blog_comments',blog_id=blog_id))
-
-  return render_template('comments.html',comment_form=form,comments=comments,blog = blog, user = user)
-
-
-@main.route('/delete_comment/<int:comment_id>', methods=['GET','POST'])
+@main.route('/edit_post/<int:blog_id>', methods=['GET','POST'])
 @login_required
-def delete_comment(comment_id):
-    comment = Comments.query.filter_by(id=comment_id).first()
+def update_post(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
 
-    db.session.delete(comment)
+    form = UpdateBlog()
+    if form.validate_on_submit():
+        blog.text=form.text.data
+        db.session.add(blog)
+        db.session.commit()
+
+      
+        return redirect(url_for('main.index', blog_id=blog.id))
+    return render_template('edit_blog.html', form=form)
+
+
+@main.route('/delete_post/<int:blog_id>', methods=['GET','POST'])
+@login_required
+def delete_post(blog_id):
+    blog = Blog.query.filter_by(id=blog_id).first()
+
+    db.session.delete(blog)
     db.session.commit()
-    return redirect(url_for('.main', comment_id=comment.id))
+    return redirect(url_for('main.index', blog_id=blog.id))
+
+#   # view root to enable commenting
+# @main.route('/comments/<int:blog_id>', methods=['GET','POST'])
+# def blog_comments(blog_id):
+
+#   comments = Comments.get_comments(blog_id)
+#   blog = Blog.query.get(blog_id)
+#   blog_posted_by = blog.user_id
+#   user = User.query.filter_by(id=blog_posted_by).first()
+  
+#   form = CommentForm()
+#   if form.validate_on_submit():
+#     comment = form.blog_comments.data
+#     new_comment = Comments(comment = comment,blog_id = blog_id,user_id = current_user.get_id())
+#     new_comment.save_comment()
+
+#     return redirect(url_for('main.blog_comments',blog_id=blog_id))
+
+#   return render_template('comments.html',comment_form=form,comments=comments,blog = blog, user = user)
+
+
+# @main.route('/delete_comment/<int:comment_id>', methods=['GET','POST'])
+# @login_required
+# def delete_comment(comment_id):
+#     comment = Comments.query.filter_by(id=comment_id).first()
+
+#     db.session.delete(comment)
+#     db.session.commit()
+#     return redirect(url_for('.main', comment_id=comment.id))
