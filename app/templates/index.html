@@ -2,25 +2,100 @@
 %}
 
 <!-- random quote -->
-<div class="container p-3" style="background-color: pink">
-  <div class="row">
-    <div class="col-md-8">
-      {% for quotes in quote %}
-      <p class="box pr-3 pl-3">{{quotes.quote}}<br />{{quotes.author}}</p>
-      {% endfor %}
-    </div>
+
+<div class="card bg-dark text-white text-center">
+  <img
+    src="https://mdbootstrap.com/img/new/textures/full/171.jpg"
+    class="card-img"
+    alt="Stony Beach"
+    height="400px"
+  />
+  <div class="card-img-overlay m-2">
+    {% for quotes in quote %}
+    <h2 class="card-text">{{quotes.quote}}<br />Author: {{quotes.author}}</h2>
+    {% endfor %}
+    <p class="card-text">Refresh to get a new quote</p>
   </div>
 </div>
 
-<div>
-  {% for blog in blog %}
-  <div>
-    <h3 style="color: #f85a3e">Category: {{blog.category}}</h3>
-    <hr />
-    <h4>Description: {{ blog.description }}</h4>
-    <h6>Posted by: {{current_user.username}}.</h6>
+<!-- blogs posted section -->
+
+<div class="container mt-4">
+  <div class="row row-cols-2 row-cols-md-3 g-4">
+    {% for blogs in blogs %}
+    <div class="col">
+      <div class="card">
+        <img
+          src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+          class="img-fluid"
+          alt="Sample image"
+        />
+        <div class="card-body">
+          <h4 class="card-title">Title : {{ blogs.title }}</h4>
+          <h6 class="card-text">Category : {{ blogs.category }}</h6>
+          <p class="card-text">
+            <small class="text-muted"
+              >Posted by : {{ current_user.username}}
+            </small>
+          </p>
+          <p class="card-text">
+            <small class="text-muted">Posted on : {{ blogs.posted}} </small>
+          </p>
+          <hr />
+
+          <p class="card-text">{{ blogs.description }}</p>
+          <hr />
+          <div class="card-text">
+            <ul class="list-inline d-flex justify-content-between">
+              <li class="list-inline-item">
+                <a class="text-dark" href="/edit_post/{{blogs.id}}">
+                  <svg
+                    width="1.2em"
+                    height="1.2em"
+                    viewBox="0 0 16 16"
+                    class="bi bi-pencil-square"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                    />
+                  </svg>
+                </a>
+              </li>
+              <!-- delete post -->
+              <li class="list-inline-item">
+                <a href="/delete_post/{{blogs.id}}" class="text-dark">
+                  <svg
+                    width="1.2em"
+                    height="1.2em"
+                    viewBox="0 0 16 16"
+                    class="bi bi-trash"
+                    fill="currentColor"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
+                    />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 </div>
+<hr />
 
 {% endblock %}
