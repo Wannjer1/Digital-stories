@@ -1,16 +1,113 @@
-{% extends 'bootstrap/base.html'%}
-
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>ModernStories</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script
+      src="https://kit.fontawesome.com/02a4bd3e3a.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Google fonts-->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link
+      href="{{url_for('static' ,filename='css/style.css')}}"
+      rel="stylesheet"
+    />
   </head>
-  <body> -->
-<!-- Content Block -->
-<!-- Navbar block as created in the navbar.html -->
-{% block navbar %} {% include 'navbar.html' %} {% endblock %}
-<!-- </body>
-</html> -->
+  <body>
+    <!-- navbar section -->
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">ModernStories</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarText"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+          </ul>
+        </div>
+        <div class="d-flex">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="{{url_for('main.new_blog',uname=current_user.username)}}"
+                >Create Blog</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                href="{{url_for('main.profile',uname=current_user.username)}}"
+                >Profile</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{url_for('auth.logout')}}"
+                >Sign out</a
+              >
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link active" href="{{url_for('auth.login')}}"
+                >Login</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link-active" href="{{url_for('auth.register')}}"
+                >Sign up</a
+              >
+            </li>
+            {%endif%}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- navbar end -->
+
+    {% block content %} {% endblock %}
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
