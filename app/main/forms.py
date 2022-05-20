@@ -29,7 +29,7 @@ class CreateBlog(FlaskForm):
 
 # form to enable blog update
 class UpdateBlog(FlaskForm):
-    text = TextAreaField('Edit your blog content', validators=[InputRequired()])
+    description = TextAreaField('Edit your blog content', validators=[InputRequired()])
     submit = SubmitField('update')
 
 

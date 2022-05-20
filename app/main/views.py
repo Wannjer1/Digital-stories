@@ -110,7 +110,7 @@ def update_post(blog_id):
 
     form = UpdateBlog()
     if form.validate_on_submit():
-        blog.text=form.text.data
+        blog.description=form.description.data
         db.session.add(blog)
         db.session.commit()
 
