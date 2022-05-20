@@ -26,8 +26,8 @@ class User(UserMixin, db.Model):
   profile_pic_path = db.Column(db.String(255))
   password_hash = db.Column(db.String(255))
   role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
-  blog_user = db.relationship('Blog',backref='user', lazy='dynamic')
- 
+  blog_id = db.relationship('Blog',backref='user', lazy='dynamic')
+  # comments = db.relationship('Comments',backref='comments', lazy='dynamic')
   
   @property
   def password(self):
@@ -35,9 +35,11 @@ class User(UserMixin, db.Model):
   
   @password.setter
   def password(self, password):
+    '''Method to create a hashed password'''
     self.password_hash = generate_password_hash(password)
     
   def verify_password(self, password):
+    '''Method to verify if a password is hashed'''
     return check_password_hash(self.password_hash, password)
   
   def __repr__(self):
@@ -61,41 +63,35 @@ class Blog(db.Model):
   __tablename__ = 'blogs'
 
   id = db.Column(db.Integer, primary_key = True)
-  blog_image= db.Column(db.String,nullable=False)
+  # blog_image= db.Column(db.String,nullable=False)
   title = db.Column(db.String(255))
-  category = db.Column(db.String(255),nullable=False)
-  owner_id = db.Column(db.Integer,db.ForeignKey("users.id"),nullable=False)
-  posted = db.Column(db.DateTime,default=datetime.utcnow,nullable=False)
-  content = db.Column(db.String(), index = True)
+  category = db.Column(db.String())
+  owner_id = db.Column(db.Integer,db.ForeignKey("users.id"))
+  posted = db.Column(db.DateTime,default=datetime.utcnow)
+  description = db.Column(db.String(), index = True)
   comments = db.relationship('Comments', backref='blog', lazy = 'dynamic')
 
   def save_blog(self):
     db.session.add(self)
     db.session.commit()
 
-  @classmethod
-  def get_blog(cls, id):
-    blogs = Blog.query.filter_by(id=id).first()
-    return blogs
 
   def __repr__(self):
-    return f'Blog {self.category}'
+    return f'Blog {self.title}'
 
 # comments model
 class Comments(db.Model):
   __tablename__ = 'comments'
   id = db.Column(db.Integer,primary_key=True)
-  comment = db.Column(db.String (), nullable=False)
+  comment = db.Column(db.String(), nullable=False)
   blog_id = db.Column(db.Integer,db.ForeignKey('blogs.id'))
-  user_id = db.Column(db.Integer,db.ForeignKey('users.id'))
+  user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+ 
 
   def save_comment(self):
     db.session.add(self)
     db.session.commit()
 
-#   def delete(self):
-#     db.session.remove(self)
-#     db.session.commit()
 
   @classmethod
   def get_comment(cls,blog_id):

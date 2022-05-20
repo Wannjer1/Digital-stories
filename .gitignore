@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 virtual/
 env/
+start.sh
 
 # C extensions
 *.so
