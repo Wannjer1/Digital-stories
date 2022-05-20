@@ -22,13 +22,18 @@ class UpdateProfile(FlaskForm):
 
 # form to enable creation of new blog post
 class CreateBlog(FlaskForm):
-    title = StringField('Title',validators=[InputRequired()])
-    author = StringField('Author',validators=[InputRequired()])
-    category = RadioField('Category', choices=[('Fashion','Fashion'),('Food','Food'),('Interior_Design','Interior_Design'),('Lifestyle','Lifestyle'),('')],validators=[InputRequired()])
-    content = TextAreaField('Blog Content',validators=[InputRequired()])
-    submit = SubmitField('Post')
+	title = StringField('Title', validators=[InputRequired()])
+	description = TextAreaField("write your blog here",validators=[InputRequired()])
+	category = RadioField('select category', choices=[('Fashion','Fashion'),('Food','Food'),('Interior_Design','Interior_Design'),('Lifestyle','Lifestyle')])
+	submit = SubmitField('Submit')
+
+# form to enable blog update
+class UpdateBlog(FlaskForm):
+    text = TextAreaField('Edit your blog content', validators=[InputRequired()])
+    submit = SubmitField('update')
+
 
 # form to enable comments
-class CommentForm(FlaskForm):
-    blog_comments = TextAreaField('Comment', validators=[InputRequired()])
-    submit = SubmitField('Comment')
+# class CommentForm(FlaskForm):
+#     blog_comments = TextAreaField('Comment', validators=[InputRequired()])
+#     submit = SubmitField('Comment')
