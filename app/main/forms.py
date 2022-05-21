@@ -34,6 +34,6 @@ class UpdateBlog(FlaskForm):
 
 
 # form to enable comments
-# class CommentForm(FlaskForm):
-#     blog_comments = TextAreaField('Comment', validators=[InputRequired()])
-#     submit = SubmitField('Comment')
+class CommentForm(FlaskForm):
+    comments = TextAreaField('Comment', validators=[InputRequired()])
+    submit = SubmitField('Comment')

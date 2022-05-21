@@ -27,7 +27,7 @@ class User(UserMixin, db.Model):
   password_hash = db.Column(db.String(255))
   role_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
   blog_id = db.relationship('Blog',backref='user', lazy='dynamic')
-  # comments = db.relationship('Comments',backref='comments', lazy='dynamic')
+  comments = db.relationship('Comments',backref='comments', lazy='dynamic')
   
   @property
   def password(self):
@@ -63,7 +63,6 @@ class Blog(db.Model):
   __tablename__ = 'blogs'
 
   id = db.Column(db.Integer, primary_key = True)
-  # blog_image= db.Column(db.String,nullable=False)
   title = db.Column(db.String(255))
   category = db.Column(db.String())
   owner_id = db.Column(db.Integer,db.ForeignKey("users.id"))
@@ -95,7 +94,7 @@ class Comments(db.Model):
 
   @classmethod
   def get_comment(cls,blog_id):
-    comments = Comments.query.filter_by(blog_id=blog_id)
+    comments = Comments.query.filter_by(blog_id=blog_id).all()
     return comments
 
   def __repr__(self):

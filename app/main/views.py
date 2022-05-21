@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from sqlalchemy import desc
 from ..models import *
 from datetime import datetime as dt
-from .forms import CreateBlog, UpdateBlog, UpdateProfile,CreateBlog
+from .forms import CreateBlog, UpdateBlog, UpdateProfile,CreateBlog,CommentForm
 
 from .. import db,photos
 from .. email import mail_message
@@ -129,30 +129,28 @@ def delete_post(blog_id):
     return redirect(url_for('main.index', blog_id=blog.id))
 
 #   # view root to enable commenting
-# @main.route('/comments/<int:blog_id>', methods=['GET','POST'])
-# def blog_comments(blog_id):
+@main.route('/comments/<int:blog_id>', methods=['GET','POST'])
+def comments(blog_id):
 
-#   comments = Comments.get_comments(blog_id)
-#   blog = Blog.query.get(blog_id)
-#   blog_posted_by = blog.user_id
-#   user = User.query.filter_by(id=blog_posted_by).first()
+  blog = Blog.query.get(blog_id)
   
-#   form = CommentForm()
-#   if form.validate_on_submit():
-#     comment = form.blog_comments.data
-#     new_comment = Comments(comment = comment,blog_id = blog_id,user_id = current_user.get_id())
-#     new_comment.save_comment()
+  form = CommentForm()
+  if form.validate_on_submit():
+    comment = form.comments.data
+    new_comment = Comments(comment = comment,blog_id = blog_id)
+    new_comment.save_comment()
 
-#     return redirect(url_for('main.blog_comments',blog_id=blog_id))
+    return redirect(url_for('main.comments',blog_id=blog_id))
+  comments = Comments.query.filter_by(blog_id=blog_id).all()
 
-#   return render_template('comments.html',comment_form=form,comments=comments,blog = blog, user = user)
+  return render_template('comments.html',form=form,comments=comments,blog = blog)
 
 
-# @main.route('/delete_comment/<int:comment_id>', methods=['GET','POST'])
-# @login_required
-# def delete_comment(comment_id):
-#     comment = Comments.query.filter_by(id=comment_id).first()
+@main.route('/delete_comment/<int:comment_id>', methods=['GET','POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comments.query.filter_by(id=comment_id).first()
 
-#     db.session.delete(comment)
-#     db.session.commit()
-#     return redirect(url_for('.main', comment_id=comment.id))
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for('main.index', comment_id=comment.id))
